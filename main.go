@@ -1,20 +1,25 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/EmailData"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/data/MMSData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/SMSData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/VoiceCallData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
+	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"strings"
 )
 
 const countryListFilename = "./configs/countries.json"
 const providerListFilename = "./configs/providers.json"
 const smsDataFilename = "./simulator/sms.data"
+const mmsDataURL = "http://127.0.0.1:8383/mms"
 const voiceCallDataFilename = "./simulator/voice.data"
 const emailDataFilename = "./simulator/email.data"
 
@@ -37,6 +42,17 @@ func main() {
 		return
 	} else {
 		fmt.Println("Данные о системе SMS:")
+		for _, d := range data {
+			fmt.Println(d)
+		}
+	}
+
+	// Сбор данных о системе MMS
+	if data, err := loadMMSData(); err != nil {
+		log.Fatal(err)
+		return
+	} else {
+		fmt.Println("Данные о системе MMS:")
 		for _, d := range data {
 			fmt.Println(d)
 		}
@@ -76,6 +92,37 @@ func loadSMSData() ([]*SMSData.SMSData, error) {
 		fields := strings.Split(str, ";")
 		if d, ok := SMSData.Parse(fields); ok {
 			data = append(data, d)
+		}
+	}
+	return data, nil
+}
+
+// Сбор данных о системе MMS
+func loadMMSData() ([]*MMSData.MMSData, error) {
+	data := make([]*MMSData.MMSData, 0)
+	res, err := http.Get(mmsDataURL)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		log.Fatal()
+		return nil, fmt.Errorf("Ошибка получения данных")
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	arr := make([]*MMSData.MMSData, 0)
+	err = json.Unmarshal(body, &arr)
+	if err != nil {
+		return nil, err
+	}
+	for _, obj := range arr {
+		if obj.IsValid() {
+			data = append(data, obj)
 		}
 	}
 	return data, nil
