@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/andreykazakovtsev90/diploma-project/pkg/SMSData"
-	"github.com/andreykazakovtsev90/diploma-project/pkg/VoiceCallData"
-	"github.com/andreykazakovtsev90/diploma-project/pkg/countryReference"
-	"github.com/andreykazakovtsev90/diploma-project/pkg/providerReference"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/data/SMSData"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/data/VoiceCallData"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -22,6 +22,7 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+
 	// загрузка справочника провайдеров
 	if err := providerReference.Init(providerListFilename); err != nil {
 		log.Fatal(err)

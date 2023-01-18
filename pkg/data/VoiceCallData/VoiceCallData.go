@@ -1,8 +1,8 @@
 package VoiceCallData
 
 import (
-	"github.com/andreykazakovtsev90/diploma-project/pkg/countryReference"
-	"github.com/andreykazakovtsev90/diploma-project/pkg/providerReference"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
 	"strconv"
 )
 
