@@ -1,11 +1,13 @@
-package countryRef
+package countryReference
 
 import (
 	"encoding/json"
 	"io/ioutil"
 )
 
-type CountryRef struct {
+var countryRef *CountryReference
+
+type CountryReference struct {
 	countries map[string]string
 }
 
@@ -18,13 +20,9 @@ type Country struct {
 	Name string `json:"name"`
 }
 
-func NewCountryRef() *CountryRef {
-	countryRef := new(CountryRef)
+func Init(filename string) error {
+	countryRef = new(CountryReference)
 	countryRef.countries = make(map[string]string, 0)
-	return countryRef
-}
-
-func (c *CountryRef) Init(filename string) error {
 	file, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
@@ -35,12 +33,12 @@ func (c *CountryRef) Init(filename string) error {
 		return err
 	}
 	for _, country := range r.Countries {
-		c.countries[country.Code] = country.Name
+		countryRef.countries[country.Code] = country.Name
 	}
 	return nil
 }
 
-func (r *CountryRef) Contains(code string) bool {
-	_, ok := r.countries[code]
+func Contains(code string) bool {
+	_, ok := countryRef.countries[code]
 	return ok
 }

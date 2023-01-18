@@ -3,18 +3,40 @@ package main
 import (
 	"fmt"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/SMSData"
-	"github.com/andreykazakovtsev90/diploma-project/pkg/countryRef"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/countryReference"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/providerReference"
 	"io/ioutil"
 	"log"
 	"strings"
 )
 
 const countryListFilename = "./configs/countries.json"
+const providerListFilename = "./configs/providers.json"
 const smsDataFilename = "./simulator/sms.data"
 
-var providers = map[string]bool{"Topolo": true, "Rond": true, "Kildy": true}
+func main() {
+	// загрузка справочника стран
+	if err := countryReference.Init(countryListFilename); err != nil {
+		log.Fatal(err)
+		return
+	}
+	// загрузка справочника провайдеров
+	if err := providerReference.Init(providerListFilename); err != nil {
+		log.Fatal(err)
+		return
+	}
 
-var ref *countryRef.CountryRef
+	// Сбор данных о системе SMS
+	if data, err := loadSMSData(); err != nil {
+		log.Fatal(err)
+		return
+	} else {
+		fmt.Println("Данные о системе SMS:")
+		for _, d := range data {
+			fmt.Println(d)
+		}
+	}
+}
 
 // Сбор данных о системе SMS
 func loadSMSData() ([]*SMSData.SMSData, error) {
@@ -25,43 +47,9 @@ func loadSMSData() ([]*SMSData.SMSData, error) {
 	}
 	for _, str := range strings.Split(string(file), "\n") {
 		fields := strings.Split(str, ";")
-		if !validateSMSData(fields) {
-			continue
+		if d, ok := SMSData.ParseSMSData(fields); ok {
+			data = append(data, d)
 		}
-		d := SMSData.NewSMSData(fields[0], fields[1], fields[2], fields[3])
-		data = append(data, d)
 	}
 	return data, nil
-}
-
-func validateSMSData(fields []string) bool {
-	if len(fields) != 4 {
-		return false
-	}
-	if !ref.Contains(fields[0]) {
-		return false
-	}
-	if !providers[fields[3]] {
-		return false
-	}
-	return true
-}
-
-func main() {
-	// загрузка справочника стран
-	ref = countryRef.NewCountryRef()
-	err := ref.Init(countryListFilename)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	if data, err := loadSMSData(); err != nil {
-		log.Fatal(err)
-		return
-	} else {
-		fmt.Println("Данных о системе SMS:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
-	}
 }

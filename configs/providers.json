@@ -1,0 +1,137 @@
+{
+  "providers": [
+    {
+      "name": "Topolo",
+      "isSMS": true,
+      "isMMS": true,
+      "isVoiceCall": false,
+      "isEmail": false
+    },
+    {
+      "name": "Rond",
+      "isSMS": true,
+      "isMMS": true,
+      "isVoiceCall": false,
+      "isEmail": false
+    },
+    {
+      "name": "Kildy",
+      "isSMS": true,
+      "isMMS": true,
+      "isVoiceCall": false,
+      "isEmail": false
+    },
+    {
+      "name": "TransparentCalls",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": true,
+      "isEmail": false
+    },
+    {
+      "name": "E-Voice",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": true,
+      "isEmail": false
+    },
+    {
+      "name": "JustPhone",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": true,
+      "isEmail": false
+    },
+    {
+      "name": "Gmail",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Yahoo",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Hotmail",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "MSN",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Orange",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Comcast",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "AOL",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Live",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "RediffMail",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "GMX",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Proton Mail",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Yandex",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    },
+    {
+      "name": "Mail.ru",
+      "isSMS": false,
+      "isMMS": false,
+      "isVoiceCall": false,
+      "isEmail": true
+    }
+  ]
+}
