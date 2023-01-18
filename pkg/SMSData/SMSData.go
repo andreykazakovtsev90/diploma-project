@@ -6,10 +6,10 @@ import (
 )
 
 type SMSData struct {
-	Country      string
-	Bandwidth    string
-	ResponseTime string
-	Provider     string
+	Country      string // alpha-2 — код страны
+	Bandwidth    string // пропускная способность канала от 0 до 100%
+	ResponseTime string // среднее время ответа в миллисекундах
+	Provider     string // название компании-провайдера
 }
 
 func NewSMSData(country string, bandwidth string, responseTime string, provider string) *SMSData {
@@ -22,7 +22,7 @@ func NewSMSData(country string, bandwidth string, responseTime string, provider 
 }
 
 // Возвращает список валидных данных о системе SMS
-func ParseSMSData(fields []string) (*SMSData, bool) {
+func Parse(fields []string) (*SMSData, bool) {
 	if len(fields) != 4 {
 		return nil, false
 	}
