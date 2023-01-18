@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/EmailData"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/data/IncidentData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/MMSData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/SMSData"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/data/SupportData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/VoiceCallData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
@@ -22,24 +24,23 @@ const smsDataFilename = "./simulator/sms.data"
 const mmsDataURL = "http://127.0.0.1:8383/mms"
 const voiceCallDataFilename = "./simulator/voice.data"
 const emailDataFilename = "./simulator/email.data"
+const supportDataURL = "http://127.0.0.1:8383/support"
+const incidentDataURL = "http://127.0.0.1:8383/accendent"
 
 func main() {
 	// загрузка справочника стран
 	if err := countryReference.Init(countryListFilename); err != nil {
 		log.Fatal(err)
-		return
 	}
 
 	// загрузка справочника провайдеров
 	if err := providerReference.Init(providerListFilename); err != nil {
 		log.Fatal(err)
-		return
 	}
 
 	// Сбор данных о системе SMS
 	if data, err := loadSMSData(); err != nil {
 		log.Fatal(err)
-		return
 	} else {
 		fmt.Println("Данные о системе SMS:")
 		for _, d := range data {
@@ -50,7 +51,6 @@ func main() {
 	// Сбор данных о системе MMS
 	if data, err := loadMMSData(); err != nil {
 		log.Fatal(err)
-		return
 	} else {
 		fmt.Println("Данные о системе MMS:")
 		for _, d := range data {
@@ -61,7 +61,6 @@ func main() {
 	// Сбор данных о системе VoiceCall
 	if data, err := loadVoiceCallData(); err != nil {
 		log.Fatal(err)
-		return
 	} else {
 		fmt.Println("Данные о системе VoiceCall:")
 		for _, d := range data {
@@ -72,13 +71,33 @@ func main() {
 	// Сбор данных о системе Email
 	if data, err := loadEmailData(); err != nil {
 		log.Fatal(err)
-		return
 	} else {
 		fmt.Println("Данные о системе Email:")
 		for _, d := range data {
 			fmt.Println(d)
 		}
 	}
+
+	// Сбор данных о системе Support
+	if data, err := loadSupportData(); err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("Данные о системе Support:")
+		for _, d := range data {
+			fmt.Println(d)
+		}
+	}
+
+	// Сбор данных о системе истории инцидентов
+	if data, err := loadIncidentData(); err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("Данные о системе истории инцидентов:")
+		for _, d := range data {
+			fmt.Println(d)
+		}
+	}
+
 }
 
 // Сбор данных о системе SMS
@@ -103,22 +122,22 @@ func loadMMSData() ([]*MMSData.MMSData, error) {
 	res, err := http.Get(mmsDataURL)
 	if err != nil {
 		log.Fatal(err)
-		return nil, err
+		return data, err
 	}
 	defer res.Body.Close()
 	if res.StatusCode != http.StatusOK {
 		log.Fatal()
-		return nil, fmt.Errorf("Ошибка получения данных")
+		return data, fmt.Errorf("Ошибка получения данных")
 	}
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
-		return nil, err
+		return data, err
 	}
 	arr := make([]*MMSData.MMSData, 0)
 	err = json.Unmarshal(body, &arr)
 	if err != nil {
-		return nil, err
+		return data, err
 	}
 	for _, obj := range arr {
 		if obj.IsValid() {
@@ -155,6 +174,62 @@ func loadEmailData() ([]*EmailData.EmailData, error) {
 		fields := strings.Split(str, ";")
 		if d, ok := EmailData.Parse(fields); ok {
 			data = append(data, d)
+		}
+	}
+	return data, nil
+}
+
+// Сбор данных о системе Support
+func loadSupportData() ([]*SupportData.SupportData, error) {
+	data := make([]*SupportData.SupportData, 0)
+	res, err := http.Get(supportDataURL)
+	if err != nil {
+		log.Fatal(err)
+		return data, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		log.Fatal()
+		return data, fmt.Errorf("Ошибка получения данных")
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+		return data, err
+	}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
+}
+
+// Сбор данных о системе истории инцидентов
+func loadIncidentData() ([]*IncidentData.IncidentData, error) {
+	data := make([]*IncidentData.IncidentData, 0)
+	res, err := http.Get(incidentDataURL)
+	if err != nil {
+		log.Fatal(err)
+		return data, err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		log.Fatal()
+		return data, fmt.Errorf("Ошибка получения данных")
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	arr := make([]*IncidentData.IncidentData, 0)
+	err = json.Unmarshal(body, &arr)
+	if err != nil {
+		return nil, err
+	}
+	for _, obj := range arr {
+		if obj.IsValid() {
+			data = append(data, obj)
 		}
 	}
 	return data, nil

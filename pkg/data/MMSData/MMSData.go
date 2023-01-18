@@ -12,15 +12,6 @@ type MMSData struct {
 	ResponseTime string `json:"response_time"` // среднее время ответа в миллисекундах
 }
 
-func NewMMSData(country string, bandwidth string, responseTime string, provider string) *MMSData {
-	data := new(MMSData)
-	data.Country = country
-	data.Bandwidth = bandwidth
-	data.ResponseTime = responseTime
-	data.Provider = provider
-	return data
-}
-
 // Возвращает список валидных данных о системе MMS
 func (d *MMSData) IsValid() bool {
 	if !countryReference.Contains(d.Country) {
