@@ -7,14 +7,14 @@ import (
 )
 
 type VoiceCallData struct {
-	Country             string  // alpha-2 — код страны
-	Bandwidth           int     // текущая нагрузка в процентах
-	ResponseTime        int     // среднее время ответа в миллисекундах
-	Provider            string  // название компании-провайдера
-	ConnectionStability float32 // стабильность соединения
-	TTFB                int     // TTFB
-	VoicePurity         int     // чистота TTFB-связи
-	Median              int     // медиана длительности звонка
+	Country             string  `json:"country"`              // alpha-2 — код страны
+	Bandwidth           int     `json:"bandwidth"`            // текущая нагрузка в процентах
+	ResponseTime        int     `json:"response_time"`        // среднее время ответа в миллисекундах
+	Provider            string  `json:"provider"`             // название компании-провайдера
+	ConnectionStability float32 `json:"connection_stability"` // стабильность соединения
+	TTFB                int     `json:"ttfb"`                 // TTFB
+	VoicePurity         int     `json:"voice_purity"`         // чистота TTFB-связи
+	Median              int     `json:"median_of_call_time"`  // медиана длительности звонка
 }
 
 func NewVoiceCallData(country string, bandwidth int, responseTime int, provider string, connectionStability float32, ttfb int, voicePurity int, median int) *VoiceCallData {

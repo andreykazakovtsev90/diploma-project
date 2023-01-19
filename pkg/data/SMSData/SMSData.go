@@ -6,10 +6,10 @@ import (
 )
 
 type SMSData struct {
-	Country      string // alpha-2 — код страны
-	Bandwidth    string // пропускная способность канала от 0 до 100%
-	ResponseTime string // среднее время ответа в миллисекундах
-	Provider     string // название компании-провайдера
+	Country      string `json:"country"`       // alpha-2 — код страны
+	Bandwidth    string `json:"bandwidth"`     // пропускная способность канала от 0 до 100%
+	ResponseTime string `json:"response_time"` // среднее время ответа в миллисекундах
+	Provider     string `json:"provider"`      // название компании-провайдера
 }
 
 func NewSMSData(country string, bandwidth string, responseTime string, provider string) *SMSData {

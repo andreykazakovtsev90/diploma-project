@@ -11,12 +11,16 @@ import (
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/VoiceCallData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/response"
+	"github.com/gorilla/mux"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 )
+
+const apiURL = "127.0.0.1:8282"
 
 const countryListFilename = "./configs/countries.json"
 const providerListFilename = "./configs/providers.json"
@@ -38,66 +42,87 @@ func main() {
 		log.Fatal(err)
 	}
 
+	listenAndServeHTTP()
+}
+
+func listenAndServeHTTP() {
+	router := mux.NewRouter()
+	router.HandleFunc("/", handleConnection)
+	router.HandleFunc("/api", handleApi)
+	http.ListenAndServe(apiURL, router)
+}
+
+func handleConnection(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func handleApi(w http.ResponseWriter, r *http.Request) {
+	resultT := new(response.ResultT)
+	if resultSetT, err := getResultData(); err != nil {
+		resultT.Status = false
+		resultT.Error = err.Error()
+		resultT.Data = nil
+		res, _ := json.Marshal(resultT)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(res)
+	} else {
+		resultT.Status = true
+		resultT.Error = ""
+		resultT.Data = resultSetT
+		res, _ := json.Marshal(resultT)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.WriteHeader(http.StatusOK)
+		w.Write(res)
+	}
+}
+
+// Функция сбора данных
+func getResultData() (*response.ResultSetT, error) {
+	resultSetT := response.NewResultSetT()
+
 	// Сбор данных о системе SMS
 	if data, err := loadSMSData(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
-		fmt.Println("Данные о системе SMS:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
+		resultSetT.SetSMS(data)
 	}
 
 	// Сбор данных о системе MMS
 	if data, err := loadMMSData(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
-		fmt.Println("Данные о системе MMS:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
+		resultSetT.SetMMS(data)
 	}
 
 	// Сбор данных о системе VoiceCall
 	if data, err := loadVoiceCallData(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
-		fmt.Println("Данные о системе VoiceCall:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
+		resultSetT.SetVoiceCall(data)
 	}
 
 	// Сбор данных о системе Email
 	if data, err := loadEmailData(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
-		fmt.Println("Данные о системе Email:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
+		resultSetT.SetEmail(data)
 	}
 
 	// Сбор данных о системе Support
 	if data, err := loadSupportData(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
-		fmt.Println("Данные о системе Support:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
+		resultSetT.SetSupport(data)
 	}
 
 	// Сбор данных о системе истории инцидентов
 	if data, err := loadIncidentData(); err != nil {
-		log.Fatal(err)
+		return nil, err
 	} else {
-		fmt.Println("Данные о системе истории инцидентов:")
-		for _, d := range data {
-			fmt.Println(d)
-		}
+		resultSetT.SetIncidents(data)
 	}
-
+	return resultSetT, nil
 }
 
 // Сбор данных о системе SMS
