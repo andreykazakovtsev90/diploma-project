@@ -7,9 +7,9 @@ import (
 )
 
 type EmailData struct {
-	Country      string // alpha-2 — код страны
-	Provider     string // название компании-провайдера
-	DeliveryTime int    // среднее время доставки писем в миллисекундах
+	Country      string `json:"country"`       // alpha-2 — код страны
+	Provider     string `json:"provider"`      // название компании-провайдера
+	DeliveryTime int    `json:"delivery_time"` // среднее время доставки писем в миллисекундах
 }
 
 func NewEmailData(country string, provider string, deliveryTime int) *EmailData {

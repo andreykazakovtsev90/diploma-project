@@ -173,8 +173,8 @@ func loadMMSData() ([]MMSData.MMSData, error) {
 }
 
 // Сбор данных о системе VoiceCall
-func loadVoiceCallData() ([]*VoiceCallData.VoiceCallData, error) {
-	data := make([]*VoiceCallData.VoiceCallData, 0)
+func loadVoiceCallData() ([]VoiceCallData.VoiceCallData, error) {
+	data := make([]VoiceCallData.VoiceCallData, 0)
 	file, err := ioutil.ReadFile(voiceCallDataFilename)
 	if err != nil {
 		return nil, err
@@ -182,15 +182,15 @@ func loadVoiceCallData() ([]*VoiceCallData.VoiceCallData, error) {
 	for _, str := range strings.Split(string(file), "\n") {
 		fields := strings.Split(str, ";")
 		if d, ok := VoiceCallData.Parse(fields); ok {
-			data = append(data, d)
+			data = append(data, *d)
 		}
 	}
 	return data, nil
 }
 
 // Сбор данных о системе Email
-func loadEmailData() ([]*EmailData.EmailData, error) {
-	data := make([]*EmailData.EmailData, 0)
+func loadEmailData() ([]EmailData.EmailData, error) {
+	data := make([]EmailData.EmailData, 0)
 	file, err := ioutil.ReadFile(emailDataFilename)
 	if err != nil {
 		return nil, err
@@ -198,7 +198,7 @@ func loadEmailData() ([]*EmailData.EmailData, error) {
 	for _, str := range strings.Split(string(file), "\n") {
 		fields := strings.Split(str, ";")
 		if d, ok := EmailData.Parse(fields); ok {
-			data = append(data, d)
+			data = append(data, *d)
 		}
 	}
 	return data, nil
