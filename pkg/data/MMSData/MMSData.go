@@ -3,6 +3,7 @@ package MMSData
 import (
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
+	"strings"
 )
 
 type MMSData struct {
@@ -22,4 +23,30 @@ func (d *MMSData) IsValid() bool {
 		return false
 	}
 	return true
+}
+
+func (d *MMSData) ModifyCountry() {
+	d.Country, _ = countryReference.Get(d.Country)
+}
+
+func SortByProvider(data []MMSData) []MMSData {
+	for i := 1; i < len(data); i++ {
+		j := i
+		for j > 0 && strings.Compare(data[j].Provider, data[j-1].Provider) < 0 {
+			data[j], data[j-1] = data[j-1], data[j]
+			j--
+		}
+	}
+	return data
+}
+
+func SortByCountry(data []MMSData) []MMSData {
+	for i := 1; i < len(data); i++ {
+		j := i
+		for j > 0 && strings.Compare(data[j].Country, data[j-1].Country) < 0 {
+			data[j], data[j-1] = data[j-1], data[j]
+			j--
+		}
+	}
+	return data
 }

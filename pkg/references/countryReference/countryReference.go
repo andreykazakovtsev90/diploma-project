@@ -38,6 +38,11 @@ func Init(filename string) error {
 	return nil
 }
 
+func Get(code string) (string, bool) {
+	c, ok := countryRef.countries[code]
+	return c, ok
+}
+
 func Contains(code string) bool {
 	_, ok := countryRef.countries[code]
 	return ok

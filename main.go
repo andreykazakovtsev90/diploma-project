@@ -126,8 +126,8 @@ func getResultData() (*response.ResultSetT, error) {
 }
 
 // Сбор данных о системе SMS
-func loadSMSData() ([]*SMSData.SMSData, error) {
-	data := make([]*SMSData.SMSData, 0)
+func loadSMSData() ([]SMSData.SMSData, error) {
+	data := make([]SMSData.SMSData, 0)
 	file, err := ioutil.ReadFile(smsDataFilename)
 	if err != nil {
 		return nil, err
@@ -135,15 +135,15 @@ func loadSMSData() ([]*SMSData.SMSData, error) {
 	for _, str := range strings.Split(string(file), "\n") {
 		fields := strings.Split(str, ";")
 		if d, ok := SMSData.Parse(fields); ok {
-			data = append(data, d)
+			data = append(data, *d)
 		}
 	}
 	return data, nil
 }
 
 // Сбор данных о системе MMS
-func loadMMSData() ([]*MMSData.MMSData, error) {
-	data := make([]*MMSData.MMSData, 0)
+func loadMMSData() ([]MMSData.MMSData, error) {
+	data := make([]MMSData.MMSData, 0)
 	res, err := http.Get(mmsDataURL)
 	if err != nil {
 		log.Fatal(err)
@@ -159,7 +159,7 @@ func loadMMSData() ([]*MMSData.MMSData, error) {
 		log.Fatal(err)
 		return data, err
 	}
-	arr := make([]*MMSData.MMSData, 0)
+	arr := make([]MMSData.MMSData, 0)
 	err = json.Unmarshal(body, &arr)
 	if err != nil {
 		return data, err

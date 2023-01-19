@@ -3,6 +3,7 @@ package SMSData
 import (
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/countryReference"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/references/providerReference"
+	"strings"
 )
 
 type SMSData struct {
@@ -35,4 +36,30 @@ func Parse(fields []string) (*SMSData, bool) {
 	}
 	d := NewSMSData(fields[0], fields[1], fields[2], fields[3])
 	return d, true
+}
+
+func (d *SMSData) ModifyCountry() {
+	d.Country, _ = countryReference.Get(d.Country)
+}
+
+func SortByProvider(data []SMSData) []SMSData {
+	for i := 1; i < len(data); i++ {
+		j := i
+		for j > 0 && strings.Compare(data[j].Provider, data[j-1].Provider) < 0 {
+			data[j], data[j-1] = data[j-1], data[j]
+			j--
+		}
+	}
+	return data
+}
+
+func SortByCountry(data []SMSData) []SMSData {
+	for i := 1; i < len(data); i++ {
+		j := i
+		for j > 0 && strings.Compare(data[j].Country, data[j-1].Country) < 0 {
+			data[j], data[j-1] = data[j-1], data[j]
+			j--
+		}
+	}
+	return data
 }

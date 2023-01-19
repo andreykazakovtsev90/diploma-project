@@ -38,20 +38,32 @@ func NewResultSetT() *ResultSetT {
 	return res
 }
 
-func (r *ResultSetT) SetSMS(data []*SMSData.SMSData) {
-	r.SMS[0] = make([]SMSData.SMSData, 0)
-	r.SMS[1] = make([]SMSData.SMSData, 0)
-	for _, d := range data {
-		r.SMS[0] = append(r.SMS[0], *d)
+func (r *ResultSetT) SetSMS(data []SMSData.SMSData) {
+	for i := range data {
+		d := &data[i]
+		d.ModifyCountry()
 	}
+	size := len(data)
+	d1 := make([]SMSData.SMSData, size)
+	copy(d1, data)
+	r.SMS[0] = SMSData.SortByProvider(d1)
+	d2 := make([]SMSData.SMSData, size)
+	copy(d2, d1)
+	r.SMS[1] = SMSData.SortByCountry(d2)
 }
 
-func (r *ResultSetT) SetMMS(data []*MMSData.MMSData) {
-	r.MMS[0] = make([]MMSData.MMSData, 0)
-	r.MMS[1] = make([]MMSData.MMSData, 0)
-	for _, d := range data {
-		r.MMS[0] = append(r.MMS[0], *d)
+func (r *ResultSetT) SetMMS(data []MMSData.MMSData) {
+	for i := range data {
+		d := &data[i]
+		d.ModifyCountry()
 	}
+	size := len(data)
+	d1 := make([]MMSData.MMSData, size)
+	copy(d1, data)
+	r.MMS[0] = MMSData.SortByProvider(d1)
+	d2 := make([]MMSData.MMSData, size)
+	copy(d2, d1)
+	r.MMS[1] = MMSData.SortByCountry(d2)
 }
 
 func (r *ResultSetT) SetVoiceCall(data []*VoiceCallData.VoiceCallData) {
