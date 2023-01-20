@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/andreykazakovtsev90/diploma-project/pkg/data/BillingData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/EmailData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/IncidentData"
 	"github.com/andreykazakovtsev90/diploma-project/pkg/data/MMSData"
@@ -17,6 +18,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -28,6 +30,7 @@ const smsDataFilename = "./simulator/sms.data"
 const mmsDataURL = "http://127.0.0.1:8383/mms"
 const voiceCallDataFilename = "./simulator/voice.data"
 const emailDataFilename = "./simulator/email.data"
+const billingDataFilename = "./simulator/billing.data"
 const supportDataURL = "http://127.0.0.1:8383/support"
 const incidentDataURL = "http://127.0.0.1:8383/accendent"
 
@@ -107,6 +110,13 @@ func getResultData() (*response.ResultSetT, error) {
 		return nil, err
 	} else {
 		resultSetT.SetEmail(data)
+	}
+
+	// Сбор данных о системе Billing
+	if data, err := loadBillingData(); err != nil {
+		return nil, err
+	} else {
+		resultSetT.SetBilling(*data)
 	}
 
 	// Сбор данных о системе Support
@@ -200,6 +210,26 @@ func loadEmailData() ([]EmailData.EmailData, error) {
 		if d, ok := EmailData.Parse(fields); ok {
 			data = append(data, *d)
 		}
+	}
+	return data, nil
+}
+
+// Сбор данных о системе Billing
+func loadBillingData() (*BillingData.BillingData, error) {
+	data := BillingData.NewBillingData()
+	file, err := ioutil.ReadFile(billingDataFilename)
+	if err != nil {
+		return nil, err
+	}
+	if d, err := strconv.ParseInt(string(file), 2, 8); err != nil {
+		return nil, err
+	} else {
+		data.CreateCustomer = d&(1<<5) != 0
+		data.Purchase = d&(1<<4) != 0
+		data.Payout = d&(1<<3) != 0
+		data.Recurring = d&(1<<2) != 0
+		data.FraudControl = d&(1<<1) != 0
+		data.CheckoutPage = d&(1<<0) != 0
 	}
 	return data, nil
 }

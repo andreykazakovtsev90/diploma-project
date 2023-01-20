@@ -117,6 +117,10 @@ func (r *ResultSetT) SetEmail(data []EmailData.EmailData) {
 	}
 }
 
+func (r *ResultSetT) SetBilling(data BillingData.BillingData) {
+	r.Billing = data
+}
+
 func (r *ResultSetT) SetSupport(data []*SupportData.SupportData) {
 }
 
