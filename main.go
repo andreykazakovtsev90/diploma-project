@@ -230,8 +230,8 @@ func loadSupportData() ([]*SupportData.SupportData, error) {
 }
 
 // Сбор данных о системе истории инцидентов
-func loadIncidentData() ([]*IncidentData.IncidentData, error) {
-	data := make([]*IncidentData.IncidentData, 0)
+func loadIncidentData() ([]IncidentData.IncidentData, error) {
+	data := make([]IncidentData.IncidentData, 0)
 	res, err := http.Get(incidentDataURL)
 	if err != nil {
 		log.Fatal(err)
@@ -254,7 +254,7 @@ func loadIncidentData() ([]*IncidentData.IncidentData, error) {
 	}
 	for _, obj := range arr {
 		if obj.IsValid() {
-			data = append(data, obj)
+			data = append(data, *obj)
 		}
 	}
 	return data, nil

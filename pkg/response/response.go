@@ -120,8 +120,6 @@ func (r *ResultSetT) SetEmail(data []EmailData.EmailData) {
 func (r *ResultSetT) SetSupport(data []*SupportData.SupportData) {
 }
 
-func (r *ResultSetT) SetIncidents(data []*IncidentData.IncidentData) {
-	for _, d := range data {
-		r.Incidents = append(r.Incidents, *d)
-	}
+func (r *ResultSetT) SetIncidents(data []IncidentData.IncidentData) {
+	r.Incidents = IncidentData.SortByStatus(data)
 }
