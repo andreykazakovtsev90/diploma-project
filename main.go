@@ -23,9 +23,8 @@ import (
 	"strings"
 )
 
-const apiURL = "127.0.0.1:8282"
-
 var (
+	apiURL                string
 	countryListFilename   string
 	providerListFilename  string
 	smsDataFilename       string
@@ -38,6 +37,7 @@ var (
 )
 
 func ConfigInit() {
+	apiURL = getenv("API_URL", "127.0.0.1:8282")
 	countryListFilename = getenv("COUNTRY_LIST_FILENAME", "./configs/countries.json")
 	providerListFilename = getenv("PROVIDER_LIST_FILENAME", "./configs/providers.json")
 	smsDataFilename = getenv("SMS_DATA_FILENAME", "./simulator/sms.data")
