@@ -18,23 +18,48 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
 
 const apiURL = "127.0.0.1:8282"
 
-const countryListFilename = "./configs/countries.json"
-const providerListFilename = "./configs/providers.json"
-const smsDataFilename = "./simulator/sms.data"
-const mmsDataURL = "http://127.0.0.1:8383/mms"
-const voiceCallDataFilename = "./simulator/voice.data"
-const emailDataFilename = "./simulator/email.data"
-const billingDataFilename = "./simulator/billing.data"
-const supportDataURL = "http://127.0.0.1:8383/support"
-const incidentDataURL = "http://127.0.0.1:8383/accendent"
+var (
+	countryListFilename   string
+	providerListFilename  string
+	smsDataFilename       string
+	mmsDataURL            string
+	voiceCallDataFilename string
+	emailDataFilename     string
+	billingDataFilename   string
+	supportDataURL        string
+	incidentDataURL       string
+)
+
+func ConfigInit() {
+	countryListFilename = getenv("COUNTRY_LIST_FILENAME", "./configs/countries.json")
+	providerListFilename = getenv("PROVIDER_LIST_FILENAME", "./configs/providers.json")
+	smsDataFilename = getenv("SMS_DATA_FILENAME", "./simulator/sms.data")
+	mmsDataURL = getenv("MMS_DATA_URL", "http://127.0.0.1:8383/mms")
+	voiceCallDataFilename = getenv("VOICE_CALL_DATA_FILENAME", "./simulator/voice.data")
+	emailDataFilename = getenv("EMAIL_DATA_FILENAME", "./simulator/email.data")
+	billingDataFilename = getenv("BILLING_DATA_FILENAME", "./simulator/billing.data")
+	supportDataURL = getenv("SUPPORT_DATA_FILENAME", "http://127.0.0.1:8383/support")
+	incidentDataURL = getenv("INCIDENT_DATA_FILENAME", "http://127.0.0.1:8383/accendent")
+}
+
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
+}
 
 func main() {
+	// инициализация переменных окружения
+	ConfigInit()
 	// загрузка справочника стран
 	if err := countryReference.Init(countryListFilename); err != nil {
 		log.Fatal(err)
